@@ -261,6 +261,7 @@ class Simulation(SimBaseModel):
         are gray values, based on the bit-depth of the detector.  If there is no
         detector or `with_detector_noise` is False, the units are simply photons.
         """
+        xp = self._xp
         _t0 = time.perf_counter()
         logger.info("Creating digital_image ...")
 
@@ -279,10 +280,10 @@ class Simulation(SimBaseModel):
         if exposure_ms is None:
             _cfg_exposures = {ch: ch.exposure_ms for ch in self.channels}
             ch_exposures: float | xr.DataArray = xr.DataArray(
-                [
+                xp.asarray([
                     _cfg_exposures.get(ch) or self.exposure_ms
                     for ch in image.coords[Axis.C].values
-                ],
+                ]),
                 dims=Axis.C,
                 coords={Axis.C: image.coords[Axis.C]},
             )

@@ -81,14 +81,14 @@ class _PSFModality(SimBaseModel):
                             objective_lens,
                             xp,
                         )
-                        fluor_sum = xp.fftconvolve(f_truth, summed_psf, mode="same")
+                        fluor_sum = xp.fftconvolve(f_truth.data, summed_psf, mode="same")
                         fluors.append(fluor_sum)
 
             # stack the fluorophores together to create the channel
             channels.append(xp.stack(fluors, axis=0))
 
         return DataArray(
-            channels,
+            xp.stack(channels, axis=0),
             dims=[Axis.C, Axis.F, Axis.Z, Axis.Y, Axis.X],
             coords={
                 Axis.C: em_rates.coords[Axis.C],
